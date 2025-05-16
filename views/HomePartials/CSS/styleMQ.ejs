@@ -1,0 +1,253 @@
+<style>
+  @media (max-width: 768px) {
+    .div1 button {
+      padding: 3px 2px;
+      text-align: center;
+    }
+
+    .div1 button i {
+      font-size: 12px !important;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .names-div2 h4 {
+      padding: 5px 0;
+      display: flex;
+      gap: 2px !important;
+      align-items: left;
+      width: fit-content !important;
+      max-width: fit-content !important;
+    }
+  }
+
+  @media (max-width: 495px) {
+    .names-div2 h4 i {
+      width: 15px;
+      height: 15px;
+    }
+
+    .names-div2 h4 {
+      padding: 5px !important;
+      gap: 5px !important;
+      width: 25%;
+    }
+  }
+
+  @media (max-width: 550px) {
+    .names-div2 {
+      gap: 0;
+      padding: 0;
+    }
+    .names-div2 h4 {
+      padding: 5px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      width: 25%;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .div1 {
+      padding: 0 10px;
+    }
+
+    .div1 .btn-text {
+      display: none;
+    }
+
+    .div1-selected {
+      background: none !important;
+      box-shadow: 0 0 1.5px 1.5px gray;
+    }
+
+    .div1 button {
+      justify-content: center;
+      background: none;
+      width: 15%;
+      padding: 5px;
+    }
+
+    .div1 button i {
+      font-size: 18px !important;
+    }
+    .names-div2 h4 {
+      justify-content: left !important;
+    }
+
+    #typeTable,
+    #categoryTable {
+      display: none;
+    }
+
+    .filterDivTable {
+      display: flex;
+      justify-content: space-between;
+      gap: 5px;
+    }
+
+    .filterDivTable select {
+      width: 32.5%;
+      font-size: 14px;
+    }
+
+    .filterDivTable input {
+      width: 45% !important;
+      font-size: 14px;
+    }
+
+    #tableAllData {
+      border: 0;
+      width: 100%;
+      table-layout: auto;
+    }
+
+    #tableAllData thead {
+      display: none;
+    }
+
+    #tableAllData tbody tr {
+      display: block;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      background: rgb(27, 20, 20);
+      padding: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    #tableAllData tbody td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      position: relative;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 14px;
+      color: white;
+    }
+
+    #tableAllData tbody td::before {
+      content: "";
+      font-weight: bold;
+      color: #ccc;
+      position: absolute;
+      left: 10px;
+    }
+
+    /* Define os rótulos com base no índice da coluna */
+    #tableAllData tbody td:nth-child(1)::before {
+      content: "Categoria";
+    }
+    #tableAllData tbody td:nth-child(2)::before {
+      content: "Pessoa";
+    }
+    #tableAllData tbody td:nth-child(3)::before {
+      content: "Tipo";
+    }
+    #tableAllData tbody td:nth-child(4)::before {
+      content: "Valor";
+    }
+    #tableAllData tbody td:nth-child(5)::before {
+      content: "Descrição";
+    }
+    #tableAllData tbody td:nth-child(6)::before {
+      content: "Data";
+    }
+
+    #tableAllData tbody td {
+      padding-left: 200px; /* espaço para o rótulo do lado esquerdo */
+    }
+
+    .dateEditMove {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+    }
+
+    .removeEditDiv {
+      justify-content: flex-start;
+    }
+
+    #tableAllData tfoot {
+      display: block;
+      background: rgb(59, 59, 59);
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    #tableAllData tfoot tr {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    #tableAllData tfoot td {
+      flex: 1 1 45%;
+      font-size: 13px;
+      padding: 10px;
+      color: white;
+    }
+
+    #tableAllData tbody tr input {
+      background: red;
+      width: 100px !important;
+    }
+
+    #tableAllData tbody tr select {
+      background: red;
+      width: 100px !important;
+    }
+  }
+
+  @media (max-width: 900px) {
+    main {
+      display: flex;
+      flex-direction: column;
+      height: auto;
+      min-height: 100vh;
+    }
+    .div1 {
+      min-height: 10vh;
+    }
+
+    .div2 {
+      min-height: 45vh;
+    }
+
+    .div3 {
+      min-height: 40vh;
+    }
+
+    .div4 {
+      min-height: 100vh;
+      height: 100vh;
+    }
+
+    .charts {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100% !important;
+      margin: auto;
+    }
+
+    .div5 {
+      height: 85vh;
+    }
+
+    .hrColumn {
+      display: none;
+    }
+
+    .chart-wrapper {
+      max-width: 90vw;
+      height: 350px;
+    }
+
+    .div1 button {
+      gap: 5px;
+    }
+  }
+</style>

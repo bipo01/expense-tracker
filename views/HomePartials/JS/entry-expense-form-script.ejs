@@ -1,0 +1,190 @@
+<script>
+  const div3 = document.querySelector(".div3");
+  const tableDiv3 = document.querySelector("#table-div3");
+  const contentDiv3 = document.querySelector(".contentDiv3");
+  const newEntry = document.querySelector("#newEntry");
+  const newExpense = document.querySelector("#newExpense");
+  const addEntryContainer = document.querySelector(".addEntryContainer");
+  const addExpenseContainer = document.querySelector(".addExpenseContainer");
+
+  const addEntryForm = document.querySelector("#addEntryForm");
+  const cancelBtnEntry = document.querySelector("#cancelBtnEntry");
+
+  const addExpenseForm = document.querySelector("#addExpenseForm");
+  const cancelBtnExpense = document.querySelector("#cancelBtnExpense");
+
+  newEntry?.addEventListener("click", () => {
+    document.querySelector(".div2").classList.remove("hidden");
+    document.querySelector(".div3").classList.remove("hidden");
+    document.querySelector(".div4").classList.remove("hidden");
+    div5.classList.add("hidden");
+
+    showForm(newEntry, addExpenseContainer, addEntryContainer);
+  });
+
+  newExpense?.addEventListener("click", () => {
+    document.querySelector(".div2").classList.remove("hidden");
+    document.querySelector(".div3").classList.remove("hidden");
+    document.querySelector(".div4").classList.remove("hidden");
+    div5.classList.add("hidden");
+    showForm(newExpense, addEntryContainer, addExpenseContainer);
+  });
+
+  cancelBtnEntry?.addEventListener("click", (e) => {
+    e.preventDefault();
+    cancelBtnForm(addEntryContainer, newEntry, addEntryForm);
+  });
+
+  cancelBtnExpense?.addEventListener("click", (e) => {
+    e.preventDefault();
+    cancelBtnForm(addExpenseContainer, newExpense, addExpenseForm);
+  });
+
+  function showForm(clickedElement, formToHide, formToShow) {
+    if (clickedElement.classList.contains("div1-selected")) {
+      document
+        .querySelector(`.div1-selected`)
+        ?.classList.remove("div1-selected");
+      clickedElement.classList.remove("div1-selected");
+      formToShow.classList.add("hidden");
+    } else {
+      document
+        .querySelector(`.div1-selected`)
+        ?.classList.remove("div1-selected");
+      clickedElement.classList.add("div1-selected");
+      formToShow.classList.remove("hidden");
+      formToHide.classList.add("hidden");
+    }
+  }
+
+  function cancelBtnForm(containerToHide, clickedElement, formToReset) {
+    containerToHide.classList.toggle("hidden");
+    clickedElement.classList.remove("div1-selected");
+
+    formToReset.reset();
+  }
+
+  addEntryForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    addingMove(addEntryForm, newEntry);
+  });
+
+  addExpenseForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    addingMove(addExpenseForm, newExpense);
+  });
+
+  function addingMove(form, clickedElement) {
+    const type = form == addEntryForm ? "Entrada" : "Saída";
+    const value = form.querySelector("#value").value;
+    const category = form.querySelector("#category").value;
+    const description = form.querySelector("#description").value.trim();
+    const rawDate = form.querySelector("#date").value;
+    const dateArr = rawDate.split("-");
+    const date = new Date(
+      Number(dateArr[0]),
+      Number(dateArr[1]) - 1,
+      Number(dateArr[2])
+    ).toLocaleDateString("pt-BR");
+
+    const allData = [type, value, category, description, date];
+    if (allData.some((el) => el.length < 1)) {
+      alert("Preencha todos os campos!");
+      return;
+    }
+
+    socket.emit("add-move", {
+      type,
+      value,
+      category,
+      description,
+      date,
+      user_id,
+      user_name,
+      sheet_id,
+    });
+
+    cancelBtnForm(form.closest("div"), clickedElement, form);
+  }
+
+  socket.on("add-move", (newMove) => {
+    if (sheet_id != newMove.sheet_id) return;
+
+    const html1 = `
+        <tr type_move="${newMove.type}" category_move="${
+      newMove.category
+    }" user_id="${newMove.user_id}" move_id="${newMove.id}">
+          <td class="categoryTd">${newMove.category}</td>
+          <td class="user_nameTd">${newMove.user_name}</td>
+          <td class="typeTd">${newMove.type}</td>
+          <td>R$ <span class="valueTd">${newMove.value}</span></td>
+          <td class="descriptionTd">${newMove.description}</td>
+          <td>
+            <div class="dateEditMove">
+              
+            
+            <span class="dateTd">${newMove.date}</span> ${
+      newMove.user_id == user_id
+        ? ` <div class="removeEditDiv">
+                <i class="fa-regular fa-pen-to-square editBtn"></i>
+                <i class="fa-solid fa-trash removeMoveBtn" title="Remover"></i>
+              </div>`
+        : ""
+    }
+      </div>
+    </td>
+        </tr>
+    `;
+
+    tableAllData.querySelector("tbody").insertAdjacentHTML("afterbegin", html1);
+
+    updateMoves();
+    allValues();
+    updateChart();
+    updatePeopleRank();
+  });
+
+  function updateMoves() {
+    tableDiv3.querySelector("tbody").innerHTML = "";
+
+    sortOut();
+
+    const recentMoves = [...tableAllData.querySelectorAll("tbody tr")]
+      .sort((a, b) => {
+        const aEl = a.querySelector(".dateTd").textContent.trim();
+        const bEl = b.querySelector(".dateTd").textContent.trim();
+
+        const aDateArr = aEl.split("/");
+        const aDate = new Date(`${aDateArr[2]}-${aDateArr[1]}-${aDateArr[0]}`);
+
+        const bDateArr = bEl.split("/");
+        const bDate = new Date(`${bDateArr[2]}-${bDateArr[1]}-${bDateArr[0]}`);
+
+        return bDate - aDate;
+      })
+      .slice(0, 5);
+
+    recentMoves.forEach((move) => {
+      const category = move.querySelector(".categoryTd").textContent;
+      const user_name = move.querySelector(".user_nameTd").textContent;
+      const type = move.querySelector(".typeTd").textContent;
+      const value = move.querySelector(".valueTd").textContent;
+      const user_id = move.getAttribute("user_id");
+
+      const html = `
+       <tr class="${
+         type === "Entrada" ? "entry-div3" : "expense-div3"
+       }" user_id="${user_id}">
+          <td>${category}</td>
+          <td>${user_name}</td>
+          <td>
+            ${type}
+          </td>
+          <td>R$ ${value}</td>
+        </tr>
+      `;
+
+      tableDiv3.querySelector("tbody").insertAdjacentHTML("beforeend", html);
+    });
+  }
+</script>

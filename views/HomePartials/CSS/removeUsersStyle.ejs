@@ -1,0 +1,150 @@
+<style>
+  #removeUsersContainer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 100vw;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .removeUsersInnerContainer {
+    position: relative; /* necessário para posicionar o ícone internamente */
+    background: rgb(15, 15, 15);
+    width: 40%;
+    height: 80%;
+    border-radius: 10px;
+    padding: 40px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow-y: auto;
+    border: 1px solid rgb(56, 56, 56);
+  }
+
+  .removeUsersInnerContainer > i.fa-circle-xmark {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .removeUsersInnerContainer > i.fa-circle-xmark:hover {
+    color: rgba(255, 100, 100, 1);
+    transform: scale(1.2);
+  }
+
+  #searchUserToRemove {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background: rgb(30, 30, 30);
+    color: white;
+    font-size: 15px;
+    border: 1px solid rgb(56, 56, 56);
+  }
+
+  .removeUserDiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgb(27, 27, 27);
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid rgb(56, 56, 56);
+    transition: background 0.3s ease;
+  }
+
+  .removeUserDiv:hover {
+    background: rgb(35, 35, 35);
+  }
+
+  .removeUserDiv span {
+    color: white;
+    font-weight: 500;
+    font-size: 15px;
+    margin-right: 10px;
+  }
+
+  .removeUserDiv span:last-of-type {
+    color: rgba(200, 200, 200, 0.7);
+    font-size: 14px;
+  }
+
+  .removeUser {
+    background: rgba(255, 50, 50, 0.2);
+    border: none;
+    border-radius: 6px;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .removeUser i {
+    color: red;
+    font-size: 18px;
+  }
+
+  #noFriendsWarn {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .removeUser:hover {
+    background: rgba(255, 50, 50, 0.35);
+    transform: scale(1.1);
+  }
+
+  @media (max-width: 650px) {
+    .removeUsersInnerContainer {
+      width: 90%;
+      height: 90%;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .removeUserDiv {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px;
+    }
+
+    .removeUser {
+      align-self: flex-end;
+    }
+
+    .removeUsersInnerContainer > i.fa-circle-xmark {
+      font-size: 22px;
+      top: 12px;
+      right: 12px;
+    }
+
+    #searchUserToRemove {
+      font-size: 14px;
+      padding: 10px 12px;
+    }
+
+    .removeUserDiv span {
+      font-size: 14px;
+    }
+
+    .removeUserDiv span:last-of-type {
+      font-size: 13px;
+    }
+
+    #noFriendsWarn {
+      font-size: 14px;
+      padding: 0 10px;
+    }
+  }
+</style>

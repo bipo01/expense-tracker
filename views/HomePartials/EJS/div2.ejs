@@ -1,0 +1,26 @@
+<div class="div2 shinyEffect">
+  <div class="title-div2">
+    <i class="fa-solid fa-ranking-star"></i>
+    <h3>Classificação por Saldo</h3>
+  </div>
+  <div class="hr"></div>
+  <div class="person-div2">
+    <% if (people.length > 0) { %> <% people.forEach(person => { %>
+    <div div2_person_id="<%= person.id %>" class="names-div2">
+      <h4><%= person.name %></h4>
+      <h4 id="totalEntries">
+        <i class="fas fa-arrow-up"></i> R$
+        <span id="totalEntriesSpan"><%= person.entries %></span>
+      </h4>
+      <h4 id="totalExpenses">
+        <i class="fas fa-arrow-down"></i> R$
+        <span id="totalExpensesSpan"><%= person.expenses %></span>
+      </h4>
+      <h4 id="totalMoney">
+        <i class="fa-solid fa-coins"></i> R$
+        <span id="totalMoneySpan"><%= person.total %></span>
+      </h4>
+    </div>
+    <% }) %> <% } %>
+  </div>
+</div>

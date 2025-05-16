@@ -1,0 +1,32 @@
+<div class="div1 shinyEffect">
+  <button id="newEntry">
+    <i class="fas fa-circle-plus"></i>
+    <span class="btn-text">Adicionar entrada</span>
+  </button>
+  <button id="newExpense">
+    <i class="fas fa-circle-minus"></i>
+    <span class="btn-text">Adicionar saída</span>
+  </button>
+  <button id="newCategory">
+    <i class="fa-solid fa-list"></i><span class="btn-text">Categorias</span>
+  </button>
+
+  <button id="goToTable">
+    <i class="fa-solid fa-table"></i>
+    <span class="btn-text">Visualizar Tabela</span>
+  </button>
+</div>
+<div class="functionalitiesFixed">
+  <% if (user_id == sheet.adm_id) { %>
+  <i
+    title="Adicionar novo usuário"
+    id="addNewUser"
+    class="fas fa-user-plus"
+  ></i>
+  <i title="Remover usuário" id="removeUser" class="fa-solid fa-user-minus"></i>
+  <% } %>
+
+  <a href="/"
+    ><i title="Voltar para página principal" class="fa-solid fa-house"></i
+  ></a>
+</div>

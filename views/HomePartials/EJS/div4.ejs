@@ -1,0 +1,26 @@
+<div class="div4 shinyEffect">
+  <div class="title-div4">
+    <div class="titleDiv4">
+      <i class="fa-solid fa-chart-simple"></i>
+      <h3>Gráficos de Movimentações</h3>
+    </div>
+    <select id="selectPersonChart">
+      <option value="Todos">Todos</option>
+      <% people.forEach(person => { %>
+      <option user_id="<%= person.id %>" value="<%= person.name %>">
+        <%= person.name %>
+      </option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="hr"></div>
+  <div class="charts">
+    <div class="chart-wrapper">
+      <canvas id="myChart1" style="width: 100%; max-width: 400px"></canvas>
+    </div>
+    <div class="hrColumn"></div>
+    <div class="chart-wrapper">
+      <canvas id="myChart2" style="width: 100%; max-width: 400px"></canvas>
+    </div>
+  </div>
+</div>

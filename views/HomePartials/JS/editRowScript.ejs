@@ -1,0 +1,149 @@
+<script>
+  document?.addEventListener("click", (e) => {
+    const element = e.target;
+
+    if (element.classList.contains("fa-pen-to-square")) {
+      editRow(element);
+      return;
+    }
+
+    if (element.classList.contains("fa-floppy-disk")) {
+      saveRow(element);
+      return;
+    }
+  });
+
+  function editRow(element) {
+    element.classList.replace("fa-pen-to-square", "fa-floppy-disk");
+
+    const categories = [];
+    document
+      .querySelectorAll("#addEntryForm #category option")
+      .forEach((option) => {
+        const category = option.value.trim();
+        categories.push(category);
+      });
+
+    const tr = element.closest("tr");
+    const category = tr.querySelector(".categoryTd");
+    const type = tr.querySelector(".typeTd");
+    const value = tr.querySelector(".valueTd");
+    const description = tr.querySelector(".descriptionTd");
+    const date = tr.querySelector(".dateTd");
+
+    const categoryCur = tr.querySelector(".categoryTd").textContent.trim();
+    const user_nameCur = tr.querySelector(".user_nameTd").textContent.trim();
+    const typeCur = tr.querySelector(".typeTd").textContent.trim();
+    const valueCur = tr.querySelector(".valueTd").textContent.trim();
+    const descriptionCur = tr
+      .querySelector(".descriptionTd")
+      .textContent.trim();
+    const dateCur = tr.querySelector(".dateTd").textContent.trim();
+
+    const dateCurArr = dateCur.split("/");
+    const rawDate = `${dateCurArr[2]}-${dateCurArr[1]}-${dateCurArr[0]}`;
+
+    date.innerHTML = `
+        <input type="date" value="${rawDate}"/>
+      `;
+
+    value.innerHTML = `
+      <input type="number" value="${valueCur}"/>
+    `;
+
+    description.innerHTML = `
+      <input type="text" value="${descriptionCur}"/>
+    `;
+
+    type.innerHTML = `
+      <select id="typesTd">
+        <option ${
+          typeCur == "Entrada" && "selected"
+        } value="Entrada">Entrada</option>
+        <option ${typeCur == "Saída" && "selected"} value="Saída">Saída</option>
+      </select>
+      `;
+
+    category.innerHTML = `
+        <select id="categoriesTd">
+          
+        </select>`;
+
+    categories.forEach((el) => {
+      let html;
+      if (el == categoryCur) {
+        html = `
+          <option selected value="${el}">${el}</option>
+        `;
+      } else {
+        html = `
+          <option value="${el}">${el}</option>
+        `;
+      }
+
+      tr.querySelector("#categoriesTd").insertAdjacentHTML("beforeend", html);
+    });
+  }
+
+  function saveRow(element) {
+    element.classList.replace("fa-floppy-disk", "fa-pen-to-square");
+
+    const tr = element.closest("tr");
+    const category = tr.querySelector(".categoryTd");
+    const type = tr.querySelector(".typeTd");
+    const value = tr.querySelector(".valueTd");
+    const description = tr.querySelector(".descriptionTd");
+    const date = tr.querySelector(".dateTd");
+
+    const move_id = Number(tr.getAttribute("move_id"));
+    const categoryValue = tr.querySelector("#categoriesTd").value.trim();
+    const typeValue = tr.querySelector("#typesTd").value.trim();
+    const valueValue = tr.querySelector(".valueTd input").value.trim();
+    const descriptionValue = tr
+      .querySelector(".descriptionTd input")
+      .value.trim();
+    const dateValue = tr.querySelector(".dateTd input").value.trim();
+    const dateValueArr = dateValue.split("-");
+    const rawDate = `${dateValueArr[2]}/${dateValueArr[1]}/${dateValueArr[0]}`;
+
+    category.textContent = categoryValue;
+    type.textContent = typeValue;
+    value.textContent = valueValue;
+    description.textContent = descriptionValue;
+    date.textContent = rawDate;
+
+    socket.emit("edit-row", {
+      categoryValue,
+      typeValue,
+      valueValue,
+      descriptionValue,
+      rawDate,
+      user_id,
+      sheet_id,
+      move_id,
+    });
+  }
+
+  socket.on("edit_row", (move) => {
+    if (move.sheet_id != sheet_id) return;
+    const { id, category, date, description, type, value } = move;
+
+    const tr = document.querySelector(`tr[move_id="${id}"]`);
+    const categoryTd = tr.querySelector(".categoryTd");
+    const typeTd = tr.querySelector(".typeTd");
+    const valueTd = tr.querySelector(".valueTd");
+    const descriptionTd = tr.querySelector(".descriptionTd");
+    const dateTd = tr.querySelector(".dateTd");
+
+    categoryTd.textContent = category;
+    typeTd.textContent = type;
+    valueTd.textContent = value;
+    descriptionTd.textContent = description;
+    dateTd.textContent = date;
+
+    updateMoves();
+    allValues();
+    updateChart();
+    updatePeopleRank();
+  });
+</script>

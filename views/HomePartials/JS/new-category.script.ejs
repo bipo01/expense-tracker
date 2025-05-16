@@ -1,0 +1,87 @@
+<script>
+  const newCategory = document.querySelector("#newCategory");
+  const formNewCategory = document.querySelector("#formNewCategory");
+  const newCategoryInput = document.querySelector("#newCategoryInput");
+  const closeCategoriesTab = document.querySelector("#closeCategoriesTab");
+  const existingCategories = document.querySelector(".existingCategories");
+  const manageCategoriesContainer = document.querySelector(
+    "#manageCategoriesContainer"
+  );
+
+  document.addEventListener("click", (e) => {
+    const element = e.target;
+
+    if (
+      element.classList.contains("removeCategoryBtn") ||
+      element.parentElement.classList.contains("removeCategoryBtn")
+    ) {
+      const parent = element.closest(".categoryItem");
+      const category = parent.querySelector("span").textContent;
+      parent.remove();
+
+      socket.emit("remove-category", { sheet_id, category });
+    }
+  });
+
+  formNewCategory.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const category = newCategoryInput.value.trim();
+
+    socket.emit("new-category", { sheet_id, category });
+  });
+
+  newCategory?.addEventListener("click", () => {
+    manageCategoriesContainer.classList.remove("hidden");
+  });
+
+  closeCategoriesTab?.addEventListener("click", () => {
+    manageCategoriesContainer.classList.add("hidden");
+  });
+
+  socket.on("remove-category", (data) => {
+    if (data.sheet_id != sheet_id) return;
+
+    const { category } = data;
+
+    existingCategories
+      .querySelector(`.categoryItem[category="${category}"]`)
+      ?.remove();
+
+    document.querySelectorAll(`option[value='${category}']`).forEach((el) => {
+      el?.remove();
+    });
+
+    document
+      .querySelectorAll(`tr[category_move='${category}']`)
+      .forEach((el) => {
+        el.setAttribute("category_move", `Sem categoria`);
+        el.querySelector(".categoryTd").textContent = "Sem categoria";
+      });
+  });
+
+  socket.on("new-category", (data) => {
+    const category = data.category;
+
+    if (sheet_id != data.sheet_id) return;
+
+    const html = `<option value="${category}">${category}</option>`;
+
+    const html1 = `
+      <div category="${category}" class="categoryItem">
+        <span>${category}</span>
+        <button class="removeCategoryBtn">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+      `;
+    existingCategories.insertAdjacentHTML("beforeend", html1);
+    document.querySelectorAll("select[name='category']").forEach((el) => {
+      el.insertAdjacentHTML("beforeend", html);
+    });
+
+    categoryTable.insertAdjacentHTML("beforeend", html);
+
+    newCategoryInput.value = "";
+  });
+</script>

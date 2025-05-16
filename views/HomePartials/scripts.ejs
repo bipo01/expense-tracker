@@ -1,0 +1,61 @@
+<script>
+  const socket = io();
+  const user_id = Number(document.body.getAttribute("user_id"));
+  const user_name = document.body.getAttribute("user_name");
+  const sheet_id = Number(document.body.getAttribute("sheet_id"));
+  const adm_id = Number(document.body.getAttribute("adm_id"));
+
+  socket.on("delete-sheet", (data) => {
+    if (data.sheet_id != sheet_id) return;
+
+    window.location.href = "/";
+  });
+
+  socket.on("leave-sheet", (data) => {
+    if (data.sheet_id != sheet_id) return;
+
+    const { person_id } = data;
+
+    if (user_id == person_id) return (window.location.href = "/");
+
+    document
+      .querySelector(`.removeUserDiv[person_id="${person_id}"]`)
+      ?.remove();
+    document
+      .querySelector(`.names-div2[div2_person_id="${person_id}"]`)
+      ?.remove();
+    const allPersonMoves = [];
+    tableAllData
+      .querySelectorAll(`tbody tr[user_id="${person_id}"]`)
+      .forEach((el) => {
+        const move_id = Number(el.getAttribute("move_id"));
+        allPersonMoves.push(move_id);
+        el.remove();
+      });
+    personTable.querySelector(`option[user_id="${person_id}"]`).remove();
+    selectPersonChart.querySelector(`option[user_id="${person_id}"]`).remove();
+
+    socket.emit("remove-all-moves", { allPersonMoves });
+
+    if (document.querySelectorAll(".removeUserDiv").length < 1) {
+      const html = `<p id="noFriendsWarn">Você ainda não tem amigos...</p>`;
+      removeUsersInnerContainer.insertAdjacentHTML("beforeend", html);
+    }
+
+    updateMoves();
+    allValues();
+    updateChart();
+    updatePeopleRank();
+  });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+
+<%- include("./JS/charts.ejs") %> <%-
+include("./JS/entry-expense-form-script.ejs") %> <%-
+include("./JS/new-category.script.ejs") %> <%-
+include("./JS/view-table-script.ejs") %> <%-include("./JS/newUserScript.ejs") %>
+<%- include("./JS/editRowScript.ejs") %> <%-
+include("./JS/removeUsersScript.ejs") %> <%-
+include("./JS/removeMoveScript.ejs") %>

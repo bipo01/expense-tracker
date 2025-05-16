@@ -1,0 +1,85 @@
+<script>
+  const removeUser = document.querySelector("#removeUser");
+  const removeUsersContainer = document.querySelector("#removeUsersContainer");
+  const closeRemoveUsersTab = document.querySelector("#closeRemoveUsersTab");
+  const removeUsersInnerContainer = document.querySelector(
+    ".removeUsersInnerContainer"
+  );
+
+  removeUser?.addEventListener("click", () => {
+    removeUsersContainer.classList.remove("hidden");
+
+    if (document.querySelectorAll(".removeUserDiv").length >= 1) {
+      document.querySelector("#noFriendsWarn")?.remove();
+    } else {
+      if (document.querySelector("#noFriendsWarn")) return;
+      const html = `<p id="noFriendsWarn">Você ainda não tem amigos...</p>`;
+      removeUsersInnerContainer.insertAdjacentHTML("beforeend", html);
+    }
+  });
+
+  closeRemoveUsersTab?.addEventListener("click", (e) => {
+    removeUsersContainer.classList.add("hidden");
+  });
+
+  document?.addEventListener("click", (e) => {
+    const element = e.target;
+
+    if (
+      element.classList.contains("removeUser") ||
+      element.parentElement.classList.contains("removeUser")
+    ) {
+      const parent = element.closest(".removeUserDiv");
+      const person_id = Number(parent.getAttribute("person_id"));
+      const personName = parent
+        .querySelector(".personToRemoveName")
+        .textContent.trim();
+      const personUsername = parent
+        .querySelector(".personToRemoveUsername")
+        .textContent.trim();
+
+      const remove = confirm(`Excluir ${personName} e seus dados da planilha?`);
+
+      if (remove) {
+        socket.emit("remove-user", { person_id, sheet_id });
+      }
+    }
+  });
+
+  socket.on("remove-user", (data) => {
+    if (data.sheet_id != sheet_id) return;
+
+    const { person_id } = data;
+
+    if (user_id == person_id) return (window.location.href = "/");
+
+    document
+      .querySelector(`.removeUserDiv[person_id="${person_id}"]`)
+      ?.remove();
+    document
+      .querySelector(`.names-div2[div2_person_id="${person_id}"]`)
+      ?.remove();
+    const allPersonMoves = [];
+    tableAllData
+      .querySelectorAll(`tbody tr[user_id="${person_id}"]`)
+      .forEach((el) => {
+        const move_id = Number(el.getAttribute("move_id"));
+        allPersonMoves.push(move_id);
+        el.remove();
+      });
+    personTable.querySelector(`option[user_id="${person_id}"]`).remove();
+    selectPersonChart.querySelector(`option[user_id="${person_id}"]`).remove();
+
+    socket.emit("remove-all-moves", { allPersonMoves });
+
+    if (document.querySelectorAll(".removeUserDiv").length < 1) {
+      const html = `<p id="noFriendsWarn">Você ainda não tem amigos...</p>`;
+      removeUsersInnerContainer.insertAdjacentHTML("beforeend", html);
+    }
+
+    updateMoves();
+    allValues();
+    updateChart();
+    updatePeopleRank();
+  });
+</script>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minhas Planilhas</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Quicksand", sans-serif;
+        font-size: 15px;
+      }
+
+      body {
+        background-color: rgb(11, 11, 11);
+        padding: 20px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      #addNewSheet {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: rgb(40, 40, 42);
+        color: white;
+        cursor: pointer;
+        transition: filter 0.2s;
+      }
+
+      #addNewSheet:hover {
+        filter: brightness(130%);
+      }
+
+      .sheets-div {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .sheets-div form {
+        width: 100%;
+      }
+
+      .sheets-div button[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: rgb(27, 27, 27);
+        color: white;
+        border: 1px solid rgb(56, 56, 56);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: filter 0.2s;
+      }
+
+      .sheets-div button[type="submit"]:hover {
+        filter: brightness(130%);
+      }
+
+      #logout {
+        background: linear-gradient(145deg, rgb(234, 30, 30), rgb(180, 20, 20));
+        padding: 10px 20px;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        box-shadow: 0 2px 5px rgba(255, 0, 0, 0.2);
+        transition: all 0.2s ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: fit-content;
+        margin: 20px auto 0;
+      }
+
+      #logout:hover {
+        filter: brightness(115%);
+        transform: scale(1.03);
+        box-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
+      }
+
+      .sheetContainer {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      #deleteSheet,
+      #leaveSheet {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background-color: rgb(27, 27, 27);
+        color: red;
+        border: 1px solid rgb(56, 56, 56);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: filter 0.2s;
+        gap: 5px;
+      }
+
+      #deleteSheet:hover,
+      #leaveSheet:hover {
+        filter: brightness(130%);
+      }
+    </style>
+  </head>
+  <body user_id="<%= user_id %>">
+    <button id="addNewSheet">Adicionar nova planilha</button>
+    <div class="sheets-div">
+      <% allSheets.forEach(sheet => { %>
+      <div class="sheetContainer">
+        <form action="/home" method="post">
+          <input type="hidden" name="sheet_id" value="<%= sheet.id %>" />
+          <button type="submit"><%= sheet.sheet %></button>
+        </form>
+        <% if (user_id == sheet.adm_id) { %>
+        <button id="deleteSheet">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+        <% } else { %>
+        <button id="leaveSheet">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+        <%}%>
+      </div>
+      <% }) %>
+      <a id="logout" href="/logout"
+        >Sair <i class="fa-solid fa-right-from-bracket"></i
+      ></a>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const user_id = Number(document.body.getAttribute("user_id"));
+
+      const sheetsDiv = document.querySelector(".sheets-div");
+      const addNewSheet = document.querySelector("#addNewSheet");
+      const logout = document.querySelector("#logout");
+
+      document.addEventListener("click", (e) => {
+        const element = e.target;
+
+        if (
+          element.classList.contains("fa-trash") ||
+          element.id == "deleteSheet"
+        ) {
+          const parent = element.closest(".sheetContainer");
+          const sheet_id = Number(
+            parent.querySelector("input[name='sheet_id']").value
+          );
+
+          socket.emit("delete-sheet", { sheet_id });
+
+          parent.remove();
+        }
+
+        if (
+          element.id == "leaveSheet" ||
+          element.classList.contains("fa-arrow-right-from-bracket")
+        ) {
+          const parent = element.closest(".sheetContainer");
+          const sheet_id = Number(
+            parent.querySelector("input[name='sheet_id']").value
+          );
+
+          socket.emit("leave-sheet", { sheet_id, user_id });
+
+          parent.remove();
+        }
+      });
+
+      addNewSheet.addEventListener("click", () => {
+        const sheetName = prompt("Nome da planilha:").trim();
+
+        if (!sheetName) {
+          alert("Nome inválido");
+          return;
+        }
+
+        socket.emit("new-sheet", { sheetName, user_id });
+      });
+
+      socket.on("delete-sheet", (data) => {
+        document
+          .querySelector(`input[name="sheet_id"][value="${data.sheet_id}"]`)
+          ?.closest(".sheetContainer")
+          .remove();
+      });
+
+      socket.on("new-sheet", (newSheet) => {
+        const html = `
+        <div class="sheetContainer">
+          <form action="/home" method="post">
+            <input type="hidden" name="sheet_id" value="${newSheet.id}" />
+            <button type="submit">${newSheet.sheet}</button>
+          </form>
+          <button id="deleteSheet">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+        `;
+        logout.insertAdjacentHTML("beforebegin", html);
+      });
+
+      socket.on("remove-user", (data) => {
+        if (data.person_id != user_id) return;
+
+        document
+          .querySelector(`input[name="sheet_id"][value="${data.sheet_id}"]`)
+          .closest(".sheetContainer")
+          .remove();
+      });
+
+      socket.on("new-user", (data) => {
+        if (data.person.id != user_id) return;
+        console.log("NEW USER");
+        const newSheetId = data.sheet_id;
+
+        socket.emit("get-new-sheet", { newSheetId });
+      });
+
+      socket.on("get-new-sheet", (sheet) => {
+        const html = `
+        <div class="sheetContainer">
+          <form action="/home" method="post">
+            <input type="hidden" name="sheet_id" value="${sheet.id}" />
+            <button type="submit">${sheet.sheet}</button>
+          </form>
+          <button id="leaveSheet">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+        </div>
+        `;
+        logout.insertAdjacentHTML("beforebegin", html);
+      });
+    </script>
+  </body>
+</html>

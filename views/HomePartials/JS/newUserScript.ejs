@@ -1,0 +1,169 @@
+<script>
+  const addNewUser = document.querySelector("#addNewUser");
+  const addUsersContainer = document.querySelector("#addUsersContainer");
+  const closeAddUsersTab = document.querySelector("#closeAddUsersTab");
+  const pShareWithFriends = document.querySelector("#pShareWithFriends");
+  const imageAddUser = document.querySelector("#imageAddUser");
+  const searchUserToAdd = document.querySelector("#searchUserToAdd");
+  const searchNewUser = document.querySelector("#searchNewUser");
+  const formNewUser = document.querySelector("#formNewUser");
+  const usersSearched = document.querySelector(".usersSearched");
+  const personDiv2 = document.querySelector(".person-div2");
+
+  addNewUser?.addEventListener("click", () => {
+    addUsersContainer.classList.remove("hidden");
+  });
+
+  closeAddUsersTab?.addEventListener("click", () => {
+    addUsersContainer.classList.add("hidden");
+    usersSearched.innerHTML = "";
+    searchUserToAdd.value = "";
+    imageAddUser.classList.remove("hidden");
+    pShareWithFriends.classList.remove("hidden");
+  });
+
+  formNewUser?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const newUser = searchUserToAdd.value.trim();
+    socket.emit("search-user", { newUser });
+  });
+
+  document?.addEventListener("click", (e) => {
+    const element = e.target;
+
+    if (element.classList.contains("insertNewUser")) {
+      const parent = element.closest(".user");
+
+      const name = parent.querySelector("#nameUserSearched").textContent;
+
+      const username = parent.querySelector(
+        "#usernameUserSearched"
+      ).textContent;
+
+      socket.emit("new-user", { username, sheet_id });
+
+      parent.remove();
+    }
+  });
+
+  socket.on("new-user", (data) => {
+    if (data == "User não existe") {
+      alert("Este usuário não existe");
+    }
+
+    if (sheet_id != data.sheet_id) return;
+    const { person } = data;
+
+    const html = `
+      <div div2_person_id="${person.id}" class="names-div2">
+      <h4>${person.name}</h4>
+      <h4 id="totalEntries">
+        <i class="fas fa-arrow-up"></i> R$ <span id="totalEntriesSpan">${person.entries}</span>
+      </h4>
+      <h4 id="totalExpenses">
+        <i class="fas fa-arrow-down"></i> R$ <span id="totalExpensesSpan">${person.expenses}</span>
+      </h4>
+      <h4 id="totalMoney">
+        <i class="fa-solid fa-coins"></i> R$ <span id="totalMoneySpan">${person.total}</span>
+      </h4>
+    </div>
+    `;
+
+    const html1 = `
+    <option user_id="${person.id}" value="${person.name}">${person.name}</option>
+    `;
+
+    const html2 = `
+    <div person_id="${person.id}" class="removeUserDiv">
+      <span class="personToRemoveName">${person.name}</span>
+      <span class="personToRemoveUsername">${person.username}</span>
+      <button class="removeUser"><i class="fa-solid fa-user-xmark"></i></button>
+    </div>
+    `;
+
+    personDiv2.insertAdjacentHTML("beforeend", html);
+    personTable.insertAdjacentHTML("beforeend", html1);
+    selectPersonChart.insertAdjacentHTML("beforeend", html1);
+    removeUsersInnerContainer.insertAdjacentHTML("beforeend", html2);
+  });
+
+  socket.on("search-user", (data) => {
+    usersSearched.innerHTML = "";
+    imageAddUser.classList.add("hidden");
+    pShareWithFriends.classList.add("hidden");
+
+    const { users } = data;
+
+    users.forEach((user) => {
+      const alreadyExist = document.querySelector(
+        `.names-div2[div2_person_id="${user.id}"]`
+      );
+      if (!alreadyExist) {
+        const html = `
+      <div class="user">
+        <p id="nameUserSearched">${user.name}</p>
+        <p id="usernameUserSearched">${user.username}</p>
+        <i class="fa-solid fa-square-plus insertNewUser"></i>
+      </div>
+    `;
+        usersSearched.insertAdjacentHTML("afterbegin", html);
+      }
+    });
+
+    if (users.length < 1) {
+      usersSearched.innerHTML =
+        "<p>Desculpa... Não encontramos esse usuário.</p>";
+    } else if (usersSearched.children.length < 1) {
+      usersSearched.innerHTML = "<p>Parece que você já tem esse amigo...</p>";
+    }
+  });
+
+  function getTotalPeople() {
+    document.querySelectorAll(".names-div2 h4").forEach((person) => {
+      const name = person.textContent;
+      const entriesArr = [];
+      const expensesArr = [];
+
+      tableAllData.querySelectorAll(".user_nameTd").forEach((td) => {
+        if (td.textContent == name) {
+          const tr = td.closest("tr");
+
+          const typeTd = tr.querySelector(".typeTd").textContent;
+          const value = Number(tr.querySelector(".valueTd").textContent);
+
+          typeTd == "Entrada"
+            ? entriesArr.push(value)
+            : expensesArr.push(value);
+        }
+      });
+
+      const entries = entriesArr.reduce((acc, cur) => acc + cur, 0);
+      const expenses = expensesArr.reduce((acc, cur) => acc + cur, 0);
+      const total = Number(entries - expenses);
+
+      document.querySelectorAll(".names-div2").forEach((person) => {
+        if (person.querySelector("h4").textContent == name) {
+          person.querySelector("#totalEntriesSpan").textContent = entries;
+          person.querySelector("#totalExpensesSpan").textContent = expenses;
+          person.querySelector("#totalMoneySpan").textContent = total;
+        }
+      });
+    });
+  }
+
+  function updatePeopleRank() {
+    getTotalPeople();
+    const people = [...document.querySelectorAll(".names-div2")];
+
+    people.sort(
+      (a, b) =>
+        Number(b.querySelector("#totalMoneySpan").textContent) -
+        Number(a.querySelector("#totalMoneySpan").textContent)
+    );
+
+    personDiv2.innerHTML = "";
+    people.forEach((person) => {
+      personDiv2.appendChild(person);
+    });
+  }
+</script>

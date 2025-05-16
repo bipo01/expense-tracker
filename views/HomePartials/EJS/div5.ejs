@@ -1,0 +1,89 @@
+<div class="div5 hidden">
+  <div class="filterDivTable">
+    <select id="sort">
+      <option value="Mais recente">Mais recente</option>
+      <option value="Mais antigo">Mais antigo</option>
+      <option value="Maior valor">Maior valor</option>
+      <option value="Menor valor">Menor valor</option>
+    </select>
+    <select id="typeTable">
+      <option value="Todos">Todos</option>
+      <option value="Entrada">Entrada</option>
+      <option value="Saída">Saída</option>
+    </select>
+    <input
+      autocomplete="off"
+      type="text"
+      id="searchBarTable"
+      placeholder="Busque aqui"
+    />
+    <select id="categoryTable">
+      <option value="Todas">Todas</option>
+      <% if (categories.length > 0) { %> <% categories.forEach(category => { %>
+      <option value="<%= category %>"><%= category %></option>
+      <% }) %> <% } %>
+    </select>
+    <select id="personTable">
+      <option value="Todas">Todas</option>
+      <% if (people.length > 0) { %> <% people.forEach(person => { %>
+      <option user_id="<%= person.id %>" value="<%= person.name %>">
+        <%= person.name %>
+      </option>
+      <% }) %> <% } %>
+    </select>
+  </div>
+
+  <div class="tableAllData">
+    <table id="tableAllData">
+      <thead>
+        <tr>
+          <th>CATEGORIA</th>
+          <th>PESSOA</th>
+          <th>TIPO</th>
+          <th>VALOR</th>
+          <th>DESCRIÇÃO</th>
+          <th>DATA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (moves.length > 0) { %> <% moves.forEach(move => { %>
+        <tr
+          type_move="<%= move.type %>"
+          category_move="<%= move.category %>"
+          user_id="<%= move.user_id %>"
+          move_id="<%=move.id%>"
+        >
+          <td class="categoryTd"><%= move.category %></td>
+          <td class="user_nameTd"><%= move.user_name %></td>
+          <td class="typeTd"><%= move.type %></td>
+          <td>R$ <span class="valueTd"><%= move.value %></span></td>
+          <td class="descriptionTd"><%= move.description %></td>
+          <td>
+            <div class="dateEditMove">
+              <span class="dateTd"><%= move.date %></span> <% if (move.user_id
+              == user_id) { %>
+              <div class="removeEditDiv">
+                <i class="fa-regular fa-pen-to-square editBtn"></i>
+                <i class="fa-solid fa-trash removeMoveBtn" title="Remover"></i>
+              </div>
+            </div>
+
+            <% } %>
+          </td>
+        </tr>
+
+        <% }) %> <% } %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td class="tdTotalEntries">Total de entradas</td>
+          <td class="tdTotalEntries" id="tdTotalEntriesValue"></td>
+          <td class="tdTotalExpenses">Total de saídas</td>
+          <td class="tdTotalExpenses" id="tdTotalExpensesValue"></td>
+          <td class="tdTotalMovements">Total</td>
+          <td class="tdTotalMovements" id="tdTotalMovementsValue"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>

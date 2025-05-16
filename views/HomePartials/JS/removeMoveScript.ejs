@@ -1,0 +1,23 @@
+<script>
+  document.addEventListener("click", (e) => {
+    const element = e.target;
+
+    if (element.classList.contains("removeMoveBtn")) {
+      const tr = element.closest("tr");
+      const move_id = Number(tr.getAttribute("move_id"));
+
+      tr?.remove();
+
+      socket.emit("remove-move", move_id);
+    }
+  });
+
+  socket.on("remove-move", (move_id) => {
+    document.querySelector(`tr[move_id="${move_id}"]`)?.remove();
+
+    updateMoves();
+    allValues();
+    updateChart();
+    updatePeopleRank();
+  });
+</script>

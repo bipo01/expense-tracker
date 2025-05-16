@@ -1,0 +1,320 @@
+<script>
+  const selectPersonChart = document.querySelector("#selectPersonChart");
+  let entries;
+  let expenses;
+  let totalAmount;
+
+  let chart1;
+  let chart2;
+
+  selectPersonChart?.addEventListener("input", () => {
+    updateChart();
+  });
+
+  updateChart();
+
+  function updateChart() {
+    const inputValue = selectPersonChart.value;
+
+    if (inputValue == "Todos") {
+      const entriesArr = [];
+      const expensesArr = [];
+
+      const categories = [];
+      const categoriesValues = [];
+
+      if (chart1) chart1.destroy();
+      if (chart2) chart2.destroy();
+
+      tableAllData.querySelectorAll("td").forEach((td) => {
+        if (td.textContent == "Entrada") {
+          const tr = td.closest("tr");
+          const value = Number(tr.querySelector(".valueTd").textContent);
+          entriesArr.push(value);
+        }
+
+        if (td.textContent == "Saída") {
+          const tr = td.closest("tr");
+          const value = Number(tr.querySelector(".valueTd").textContent);
+          expensesArr.push(value);
+        }
+      });
+      entries = entriesArr.reduce((acc, cur) => acc + cur, 0);
+      expenses = expensesArr.reduce((acc, cur) => acc + cur, 0);
+
+      totalAmount = Number(entries - expenses);
+
+      const totalsChartsValues = [entries, expenses, totalAmount];
+      const totalsChartsLabels = ["Entrada", "Saída", "Total"];
+      const totalsChartsBgColors = ["green", "red", "blue"];
+
+      chart1 = new Chart("myChart1", {
+        type: "bar",
+        data: {
+          labels: totalsChartsLabels,
+          datasets: [
+            {
+              backgroundColor: totalsChartsBgColors,
+              data: totalsChartsValues,
+            },
+          ],
+        },
+        options: {
+          legend: { display: false },
+
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            xAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      document.querySelectorAll(".categoryTd").forEach((td) => {
+        const category = td.textContent.trim();
+        if (!categories.includes(category)) {
+          categories.push(category);
+        }
+      });
+
+      categories.sort().forEach((category) => {
+        const categoryEntriesArr = [];
+        const categoryExpensesArr = [];
+        document
+          .querySelectorAll(`tr[category_move="${category}"]`)
+          .forEach((tr) => {
+            const type = tr.getAttribute("type_move");
+            const value = Number(tr.querySelector(".valueTd").textContent);
+            if (type == "Entrada") {
+              categoryEntriesArr.push(value);
+            } else if (type == "Saída") {
+              categoryExpensesArr.push(value);
+            }
+          });
+
+        const categoryEntries = categoryEntriesArr.reduce(
+          (acc, cur) => acc + cur,
+          0
+        );
+        const categoryExpenses = categoryExpensesArr.reduce(
+          (acc, cur) => acc + cur,
+          0
+        );
+
+        const categoryTotal = Number(categoryEntries - categoryExpenses);
+        categoriesValues.push(categoryTotal);
+      });
+
+      const barColors = [
+        "blue",
+        "green",
+        "orange",
+        "purple",
+        "cyan",
+        "magenta",
+        "lime",
+        "teal",
+        "yellow",
+        "brown",
+        "black",
+        "gold",
+        "navy",
+        "crimson",
+        "olive",
+        "deeppink",
+        "coral",
+        "turquoise",
+        "darkorange",
+        "indigo",
+        "salmon",
+        "darkgreen",
+        "darkred",
+        "mediumvioletred",
+      ];
+
+      chart2 = new Chart("myChart2", {
+        type: "pie",
+        data: {
+          labels: categories,
+          datasets: [
+            {
+              backgroundColor: barColors,
+              data: categoriesValues,
+              borderWidth: 0,
+            },
+          ],
+        },
+        options: {
+          legend: {
+            display: false,
+          },
+          responsive: true,
+          maintainAspectRatio: false,
+          aspectRatio: 2,
+        },
+      });
+      return;
+    }
+
+    const entriesArr = [];
+    const expensesArr = [];
+
+    const categories = [];
+    const categoriesValues = [];
+
+    if (chart1) chart1.destroy();
+    if (chart2) chart2.destroy();
+
+    tableAllData.querySelectorAll("td").forEach((td) => {
+      if (td.textContent == "Entrada") {
+        const tr = td.closest("tr");
+        if (tr.querySelector(".user_nameTd").textContent == inputValue) {
+          const value = Number(tr.querySelector(".valueTd").textContent);
+          entriesArr.push(value);
+        }
+      }
+
+      if (td.textContent == "Saída") {
+        const tr = td.closest("tr");
+        if (tr.querySelector(".user_nameTd").textContent == inputValue) {
+          const value = Number(tr.querySelector(".valueTd").textContent);
+          expensesArr.push(value);
+        }
+      }
+    });
+    entries = entriesArr.reduce((acc, cur) => acc + cur, 0);
+    expenses = expensesArr.reduce((acc, cur) => acc + cur, 0);
+
+    totalAmount = Number(entries - expenses);
+
+    const totalsChartsValues = [entries, expenses, totalAmount];
+    const totalsChartsLabels = ["Entrada", "Saída", "Total"];
+    const totalsChartsBgColors = ["green", "red", "blue"];
+
+    chart1 = new Chart("myChart1", {
+      type: "bar",
+      data: {
+        labels: totalsChartsLabels,
+        datasets: [
+          {
+            backgroundColor: totalsChartsBgColors,
+            data: totalsChartsValues,
+          },
+        ],
+      },
+      options: {
+        legend: { display: false },
+
+        responsive: true,
+        maintainAspectRatio: false,
+        aspectRatio: 2,
+        scales: {
+          xAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    document.querySelectorAll(".categoryTd").forEach((td) => {
+      const category = td.textContent.trim();
+      const tr = td.closest("tr");
+      if (!categories.includes(category)) {
+        if (tr.querySelector(".user_nameTd").textContent == inputValue) {
+          categories.push(category);
+        }
+      }
+    });
+
+    categories.sort().forEach((category) => {
+      const categoryEntriesArr = [];
+      const categoryExpensesArr = [];
+      document
+        .querySelectorAll(`tr[category_move="${category}"]`)
+        .forEach((tr) => {
+          const type = tr.getAttribute("type_move");
+          const value = Number(tr.querySelector(".valueTd").textContent);
+          if (type == "Entrada") {
+            if (tr.querySelector(".user_nameTd").textContent == inputValue) {
+              categoryEntriesArr.push(value);
+            }
+          } else if (type == "Saída") {
+            if (tr.querySelector(".user_nameTd").textContent == inputValue) {
+              categoryExpensesArr.push(value);
+            }
+          }
+        });
+
+      const categoryEntries = categoryEntriesArr.reduce(
+        (acc, cur) => acc + cur,
+        0
+      );
+      const categoryExpenses = categoryExpensesArr.reduce(
+        (acc, cur) => acc + cur,
+        0
+      );
+
+      const categoryTotal = Number(categoryEntries - categoryExpenses);
+      categoriesValues.push(categoryTotal);
+    });
+
+    const barColors = [
+      "blue",
+      "green",
+      "orange",
+      "purple",
+      "cyan",
+      "magenta",
+      "lime",
+      "teal",
+      "yellow",
+      "brown",
+      "black",
+      "gold",
+      "navy",
+      "crimson",
+      "olive",
+      "deeppink",
+      "coral",
+      "turquoise",
+      "darkorange",
+      "indigo",
+      "salmon",
+      "darkgreen",
+      "darkred",
+      "mediumvioletred",
+    ];
+
+    chart2 = new Chart("myChart2", {
+      type: "pie",
+      data: {
+        labels: categories,
+        datasets: [
+          {
+            backgroundColor: barColors,
+            data: categoriesValues,
+            borderWidth: 0,
+          },
+        ],
+      },
+      options: {
+        legend: {
+          display: false,
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        aspectRatio: 2,
+      },
+    });
+  }
+</script>

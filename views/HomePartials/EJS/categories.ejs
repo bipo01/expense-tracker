@@ -1,0 +1,32 @@
+<div id="manageCategoriesContainer" class="hidden">
+  <div class="manageCategoriesInnerContainer">
+    <i id="closeCategoriesTab" class="fa-solid fa-circle-xmark"></i>
+
+    <form id="formNewCategory" class="category-bar-wrapper">
+      <input
+        type="text"
+        id="newCategoryInput"
+        placeholder="Nova Categoria"
+        required
+      />
+      <button type="submit" id="addCategoryBtn">
+        <i class="fa-solid fa-plus"></i>
+      </button>
+    </form>
+
+    <div class="existingCategories">
+      <% categories.forEach(category => { %>
+      <div category="<%= category %>" class="categoryItem">
+        <span><%= category %></span>
+        <button class="removeCategoryBtn">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+      <% }) %>
+    </div>
+
+    <p id="pManageCategories">
+      Organize suas finanças criando e gerenciando categorias.
+    </p>
+  </div>
+</div>

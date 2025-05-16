@@ -1,0 +1,231 @@
+<script>
+  const goToTable = document.querySelector("#goToTable");
+  const div5 = document.querySelector(".div5");
+  const sort = document.querySelector("#sort");
+  const searchBarTable = document.querySelector("#searchBarTable");
+  const typeTable = document.querySelector("#typeTable");
+  const personTable = document.querySelector("#personTable");
+  const categoryTable = document.querySelector("#categoryTable");
+
+  const tableAllData = document.querySelector("#tableAllData");
+  const tdTotalEntriesValue = document.querySelector("#tdTotalEntriesValue");
+  const tdTotalExpensesValue = document.querySelector("#tdTotalExpensesValue");
+  const tdTotalMovementsValue = document.querySelector(
+    "#tdTotalMovementsValue"
+  );
+
+  allValues();
+
+  goToTable?.addEventListener("click", () => {
+    if (goToTable.classList.contains("div1-selected")) {
+      document
+        .querySelector(`.div1-selected`)
+        ?.classList.remove("div1-selected");
+      div5.classList.add("hidden");
+      goToTable.classList.remove("div1-selected");
+
+      document.querySelector(".div2").classList.remove("hidden");
+      document.querySelector(".div3").classList.remove("hidden");
+      document.querySelector(".div4").classList.remove("hidden");
+    } else {
+      document.querySelector(".div2").classList.add("hidden");
+      document.querySelector(".div3").classList.add("hidden");
+      document.querySelector(".div4").classList.add("hidden");
+      document
+        .querySelector(`.div1-selected`)
+        ?.classList.remove("div1-selected");
+      div5.classList.remove("hidden");
+      goToTable.classList.add("div1-selected");
+    }
+
+    contentDiv3.classList.remove("hidden");
+    addEntryContainer.classList.add("hidden");
+    addExpenseContainer.classList.add("hidden");
+  });
+
+  sort?.addEventListener("input", () => {
+    sortOut();
+  });
+
+  searchBarTable?.addEventListener("input", () => {
+    const inputValue = searchBarTable.value.toLowerCase().trim();
+
+    document.querySelectorAll("#tableAllData tbody tr").forEach((tr) => {
+      if (!tr.textContent.toLowerCase().includes(inputValue)) {
+        tr.classList.add("hiddenSearchBar");
+      } else {
+        tr.classList.remove("hiddenSearchBar");
+      }
+    });
+
+    allValues();
+  });
+
+  typeTable?.addEventListener("input", () => {
+    if (typeTable.value == "Todos") {
+      document.querySelectorAll("#tableAllData tbody tr").forEach((tr) => {
+        tr.classList.remove("hiddenType");
+      });
+    } else {
+      document.querySelectorAll("#tableAllData tbody tr").forEach((tr) => {
+        if (!tr.textContent.includes(typeTable.value)) {
+          tr.classList.add("hiddenType");
+        } else {
+          tr.classList.remove("hiddenType");
+        }
+      });
+    }
+
+    allValues();
+  });
+
+  categoryTable?.addEventListener("input", () => {
+    filterAll(categoryTable, "hiddenCategory");
+    allValues();
+  });
+
+  personTable?.addEventListener("input", () => {
+    filterAll(personTable, "hiddenPerson");
+    allValues();
+  });
+
+  function filterAll(element, classToHide) {
+    if (element.value == "Todas") {
+      document.querySelectorAll("#tableAllData tbody tr").forEach((tr) => {
+        tr.classList.remove(classToHide);
+      });
+
+      return;
+    }
+
+    document.querySelectorAll("#tableAllData tbody tr").forEach((tr) => {
+      if (!tr.textContent.includes(element.value)) {
+        tr.classList.add(classToHide);
+      } else {
+        tr.classList.remove(classToHide);
+      }
+    });
+  }
+
+  function allValues() {
+    //////////////////// ALL ENTRIES ///////////////////////
+    const allEntriesArr = [];
+    const allEntriesEl = tableAllData.querySelectorAll("td").forEach((td) => {
+      if (td.textContent == "Entrada") {
+        const tr = td.closest("tr");
+        const value = Number(tr.querySelector(".valueTd").textContent);
+
+        if (
+          ![...tr.classList].some((className) => className.includes("hidden"))
+        ) {
+          allEntriesArr.push(value);
+        }
+      }
+    });
+    const allEntries = allEntriesArr.reduce((acc, cur) => acc + cur, 0);
+    tdTotalEntriesValue.textContent = allEntries;
+    ///////////////////// ALL EXPENSES ///////////////////////////
+    const allExpensesArr = [];
+    const allExpensesEl = tableAllData.querySelectorAll("td").forEach((td) => {
+      if (td.textContent == "Saída") {
+        const tr = td.closest("tr");
+        const value = Number(tr.querySelector(".valueTd").textContent);
+
+        if (
+          ![...tr.classList].some((className) => className.includes("hidden"))
+        ) {
+          allExpensesArr.push(value);
+        }
+      }
+    });
+    const allExpenses = allExpensesArr.reduce((acc, cur) => acc + cur, 0);
+    tdTotalExpensesValue.textContent = allExpenses;
+    /////////////////////TOTAL MOVEMENTS///////////////////////////
+    const totalMovementsValue = Number(allEntries - allExpenses);
+    tdTotalMovementsValue.textContent = totalMovementsValue;
+    ///////////////////////////////////////////////////////////////
+
+    entries = allEntries;
+    expenses = allExpenses;
+    totalAmount = totalMovementsValue;
+  }
+
+  function sortOut() {
+    const inputValue = sort.value;
+    console.log(inputValue);
+
+    if (inputValue == "Mais recente") {
+      const moves = [...tableAllData.querySelectorAll("tbody tr")].sort(
+        (a, b) => {
+          const aEl = a.querySelector(".dateTd").textContent.trim();
+          const bEl = b.querySelector(".dateTd").textContent.trim();
+
+          const aDateArr = aEl.split("/");
+          const aDate = new Date(
+            `${aDateArr[2]}-${aDateArr[1]}-${aDateArr[0]}`
+          );
+
+          const bDateArr = bEl.split("/");
+          const bDate = new Date(
+            `${bDateArr[2]}-${bDateArr[1]}-${bDateArr[0]}`
+          );
+
+          return bDate - aDate;
+        }
+      );
+
+      moves.forEach((move) => {
+        tableAllData.querySelector("tbody").appendChild(move);
+      });
+    } else if (inputValue == "Mais antigo") {
+      const moves = [...tableAllData.querySelectorAll("tbody tr")].sort(
+        (a, b) => {
+          const aEl = a.querySelector(".dateTd").textContent.trim();
+          const bEl = b.querySelector(".dateTd").textContent.trim();
+
+          const aDateArr = aEl.split("/");
+          const aDate = new Date(
+            `${aDateArr[2]}-${aDateArr[1]}-${aDateArr[0]}`
+          );
+
+          const bDateArr = bEl.split("/");
+          const bDate = new Date(
+            `${bDateArr[2]}-${bDateArr[1]}-${bDateArr[0]}`
+          );
+
+          return aDate - bDate;
+        }
+      );
+
+      moves.forEach((move) => {
+        tableAllData.querySelector("tbody").appendChild(move);
+      });
+    } else if (inputValue == "Maior valor") {
+      const moves = [...tableAllData.querySelectorAll("tbody tr")].sort(
+        (a, b) => {
+          const aEl = Number(a.querySelector(".valueTd").textContent.trim());
+          const bEl = Number(b.querySelector(".valueTd").textContent.trim());
+
+          return bEl - aEl;
+        }
+      );
+
+      moves.forEach((move) => {
+        tableAllData.querySelector("tbody").appendChild(move);
+      });
+    } else if (inputValue == "Menor valor") {
+      const moves = [...tableAllData.querySelectorAll("tbody tr")].sort(
+        (a, b) => {
+          const aEl = Number(a.querySelector(".valueTd").textContent.trim());
+          const bEl = Number(b.querySelector(".valueTd").textContent.trim());
+
+          return aEl - bEl;
+        }
+      );
+
+      moves.forEach((move) => {
+        tableAllData.querySelector("tbody").appendChild(move);
+      });
+    }
+  }
+</script>

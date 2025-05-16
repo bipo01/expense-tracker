@@ -1,0 +1,163 @@
+<style>
+  .div5 {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tableAllData {
+    padding: 0 10px;
+    border-radius: 10px;
+    overflow-y: auto;
+  }
+
+  #tableAllData {
+    color: white;
+    table-layout: fixed;
+    text-align: left;
+    width: 100%;
+  }
+
+  #tableAllData td {
+    position: relative;
+  }
+
+  #tableAllData thead th {
+    position: sticky;
+    top: 0;
+    background: rgb(59, 59, 59);
+    z-index: 1;
+  }
+
+  #tableAllData tfoot td {
+    position: sticky;
+    bottom: 0;
+    font-weight: bold;
+    z-index: 2;
+  }
+
+  #tableAllData tbody td {
+    background: rgb(27, 20, 20);
+  }
+
+  #tableAllData td,
+  #tableAllData th {
+    padding: 10px;
+    width: 30%;
+  }
+
+  #tableAllData th {
+    background: rgb(59, 59, 59);
+    letter-spacing: 2px;
+    font-size: 16px;
+  }
+
+  #tableAllData tfoot td {
+    padding: 10px;
+  }
+
+  .dateEditMove {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .removeEditDiv {
+    display: flex;
+  }
+
+  .editBtn,
+  .removeMoveBtn {
+    cursor: pointer;
+    margin-left: 8px;
+    font-size: 16px;
+    transition: color 0.3s ease;
+  }
+
+  .editBtn:hover {
+    color: #4caf50; /* verde para editar */
+  }
+
+  .removeMoveBtn:hover {
+    color: #f44336; /* vermelho para deletar */
+  }
+
+  .tdTotalEntries {
+    background: rgb(29, 84, 29);
+  }
+
+  .tdTotalExpenses {
+    background: rgb(135, 32, 32);
+  }
+
+  .tdTotalMovements {
+    background: rgb(17, 17, 149);
+  }
+
+  .filterDivTable {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .filterDivTable select {
+    width: 15%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    background: rgb(41, 38, 38);
+    color: white;
+  }
+
+  #searchBarTable {
+    padding: 10px;
+    width: 30%;
+    border-radius: 15px;
+    border: none;
+    outline: none;
+    text-align: center;
+    background: rgb(41, 38, 38);
+    color: white;
+  }
+
+  .hiddenSearchBar,
+  .hiddenType,
+  .hiddenCategory,
+  .hiddenPerson {
+    display: none !important;
+  }
+
+  .tableAllData::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .tableAllData::-webkit-scrollbar-track {
+    background: rgb(30, 30, 30);
+    border-radius: 10px;
+  }
+
+  .tableAllData::-webkit-scrollbar-thumb {
+    background: rgb(90, 90, 90);
+    border-radius: 10px;
+  }
+
+  .tableAllData::-webkit-scrollbar-thumb:hover {
+    background: rgb(120, 120, 120);
+  }
+
+  .tableAllData {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(90, 90, 90) rgb(30, 30, 30);
+  }
+
+  #tableAllData tbody tr select,
+  #tableAllData tbody tr input {
+    background: rgb(40, 31, 31);
+    color: white;
+    border: none;
+    outline: none;
+    width: fit-content;
+    padding: 5px;
+    border-radius: 5px;
+  }
+</style>
