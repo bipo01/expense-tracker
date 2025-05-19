@@ -118,8 +118,8 @@
 
     #tableAllData tbody td {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      justify-content: center;
       padding: 10px;
       position: relative;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -156,7 +156,8 @@
     }
 
     #tableAllData tbody td {
-      padding-left: 200px; /* espaço para o rótulo do lado esquerdo */
+      width: 100%;
+      padding-left: 165px;
     }
 
     .dateEditMove {
@@ -190,14 +191,14 @@
       color: white;
     }
 
-    #tableAllData tbody tr input {
-      background: red;
-      width: 100px !important;
+    #tableAllData tbody tr select {
+      width: fit-content !important;
+      max-width: 150px !important;
     }
 
-    #tableAllData tbody tr select {
-      background: red;
-      width: 100px !important;
+    #tableAllData tbody tr input {
+      width: fit-content !important;
+      max-width: 120px !important;
     }
   }
 
@@ -209,19 +210,19 @@
       min-height: 100vh;
     }
     .div1 {
-      min-height: 10vh;
+      height: 10vh;
     }
 
     .div2 {
-      min-height: 45vh;
+      height: 45vh;
     }
 
     .div3 {
-      min-height: 40vh;
+      height: 40vh;
     }
 
     .div4 {
-      min-height: 100vh;
+      height: 100vh;
       height: 100vh;
     }
 

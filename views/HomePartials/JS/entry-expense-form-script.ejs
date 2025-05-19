@@ -13,20 +13,24 @@
   const addExpenseForm = document.querySelector("#addExpenseForm");
   const cancelBtnExpense = document.querySelector("#cancelBtnExpense");
 
-  newEntry?.addEventListener("click", () => {
-    document.querySelector(".div2").classList.remove("hidden");
-    document.querySelector(".div3").classList.remove("hidden");
-    document.querySelector(".div4").classList.remove("hidden");
-    div5.classList.add("hidden");
+  document.addEventListener("click", (e) => {
+    const element = e.target;
+    if (element == addEntryContainer) {
+      addEntryContainer.classList.add("hidden");
+      newEntry.classList.remove("div1-selected");
+    }
 
+    if (element == addExpenseContainer) {
+      addExpenseContainer.classList.add("hidden");
+      newExpense.classList.remove("div1-selected");
+    }
+  });
+
+  newEntry?.addEventListener("click", () => {
     showForm(newEntry, addExpenseContainer, addEntryContainer);
   });
 
   newExpense?.addEventListener("click", () => {
-    document.querySelector(".div2").classList.remove("hidden");
-    document.querySelector(".div3").classList.remove("hidden");
-    document.querySelector(".div4").classList.remove("hidden");
-    div5.classList.add("hidden");
     showForm(newExpense, addEntryContainer, addExpenseContainer);
   });
 

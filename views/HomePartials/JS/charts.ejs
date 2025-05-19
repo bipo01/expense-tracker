@@ -46,7 +46,11 @@
 
       const totalsChartsValues = [entries, expenses, totalAmount];
       const totalsChartsLabels = ["Entrada", "Saída", "Total"];
-      const totalsChartsBgColors = ["green", "red", "blue"];
+      const totalsChartsBgColors = [
+        "rgb(39, 104, 39)",
+        "rgb(149, 38, 38)",
+        "rgb(231, 231, 143)",
+      ];
 
       chart1 = new Chart("myChart1", {
         type: "bar",
@@ -112,30 +116,25 @@
       });
 
       const barColors = [
-        "blue",
-        "green",
-        "orange",
-        "purple",
-        "cyan",
-        "magenta",
-        "lime",
-        "teal",
-        "yellow",
-        "brown",
-        "black",
-        "gold",
-        "navy",
-        "crimson",
-        "olive",
-        "deeppink",
-        "coral",
-        "turquoise",
-        "darkorange",
-        "indigo",
-        "salmon",
-        "darkgreen",
-        "darkred",
-        "mediumvioletred",
+        "#111111",
+        "#2e2e2e",
+        "#3d3d3d",
+        "#4a4a4a",
+        "#555555",
+        "#666666",
+        "#777777",
+        "#888888",
+        "#999999",
+        "#aaaaaa",
+        "#bbbbbb",
+        "#cccccc",
+        "#dddddd",
+        "#eeeeee",
+        "#f2f2f2",
+        "#444444",
+        "#4e4e4e",
+        "#585858",
+        "#606060",
       ];
 
       chart2 = new Chart("myChart2", {

@@ -21,6 +21,11 @@
 
       socket.emit("remove-category", { sheet_id, category });
     }
+
+    if (element == manageCategoriesContainer) {
+      manageCategoriesContainer.classList.add("hidden");
+      newCategory.classList.remove("div1-selected");
+    }
   });
 
   formNewCategory.addEventListener("submit", (e) => {

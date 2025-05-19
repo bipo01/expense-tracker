@@ -122,6 +122,73 @@
       #leaveSheet:hover {
         filter: brightness(130%);
       }
+
+      #manageSheetsContainer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        z-index: 999;
+      }
+
+      .manageSheetsInnerContainer {
+        height: fit-content;
+        margin-top: 100px;
+        background-color: rgb(27, 27, 27);
+        padding: 30px;
+        border-radius: 16px;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        position: relative;
+        border: 1px solid rgb(56, 56, 56);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+        color: white;
+      }
+
+      .sheet-bar-wrapper {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        gap: 10px;
+      }
+
+      .sheet-bar-wrapper input {
+        flex: 1;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid rgb(56, 56, 56);
+        background: rgb(20, 20, 20);
+        color: white;
+        outline: none;
+      }
+
+      .sheet-bar-wrapper button {
+        background-color: rgb(130, 235, 130);
+        color: black;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .sheet-bar-wrapper button:hover {
+        filter: brightness(110%);
+      }
+
+      #pManageSheets {
+        margin-top: 20px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .hidden {
+        display: none !important;
+      }
     </style>
   </head>
   <body user_id="<%= user_id %>">
@@ -144,9 +211,27 @@
         <%}%>
       </div>
       <% }) %>
-      <a id="logout" href="/logout"
-        >Sair <i class="fa-solid fa-right-from-bracket"></i
-      ></a>
+      <a id="logout" href="/logout">Sair da minha conta</a>
+    </div>
+
+    <div id="manageSheetsContainer" class="hidden">
+      <div class="manageSheetsInnerContainer">
+        <form id="formNewSheet" class="sheet-bar-wrapper">
+          <input
+            type="text"
+            id="newSheetInput"
+            placeholder="Nova Planilha"
+            required
+          />
+          <button type="submit" id="addSheetBtn">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </form>
+
+        <p id="pManageSheets">
+          Adicione e organize suas planilhas de controle financeiro.
+        </p>
+      </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -157,6 +242,27 @@
       const sheetsDiv = document.querySelector(".sheets-div");
       const addNewSheet = document.querySelector("#addNewSheet");
       const logout = document.querySelector("#logout");
+      const newSheetInput = document.querySelector("#newSheetInput");
+      const formNewSheet = document.querySelector("#formNewSheet");
+      const manageSheetsContainer = document.querySelector(
+        "#manageSheetsContainer"
+      );
+
+      formNewSheet.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const sheetName = newSheetInput.value.trim();
+
+        if (sheetName.length < 1) {
+          newSheetInput.value = "";
+          alert("Nome vazio");
+          formNewSheet.blur();
+        } else {
+          socket.emit("new-sheet", { sheetName, user_id });
+          formNewSheet.reset();
+          manageSheetsContainer.classList.add("hidden");
+        }
+      });
 
       document.addEventListener("click", (e) => {
         const element = e.target;
@@ -188,17 +294,14 @@
 
           parent.remove();
         }
+
+        if (element == manageSheetsContainer) {
+          manageSheetsContainer.classList.add("hidden");
+        }
       });
 
       addNewSheet.addEventListener("click", () => {
-        const sheetName = prompt("Nome da planilha:").trim();
-
-        if (!sheetName) {
-          alert("Nome inválido");
-          return;
-        }
-
-        socket.emit("new-sheet", { sheetName, user_id });
+        manageSheetsContainer.classList.remove("hidden");
       });
 
       socket.on("delete-sheet", (data) => {

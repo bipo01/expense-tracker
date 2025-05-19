@@ -10,6 +10,13 @@
   const usersSearched = document.querySelector(".usersSearched");
   const personDiv2 = document.querySelector(".person-div2");
 
+  document.addEventListener("click", (e) => {
+    const element = e.target;
+    if (element == addUsersContainer) {
+      addUsersContainer.classList.add("hidden");
+    }
+  });
+
   addNewUser?.addEventListener("click", () => {
     addUsersContainer.classList.remove("hidden");
   });
