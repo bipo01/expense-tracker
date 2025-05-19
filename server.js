@@ -360,7 +360,7 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-  const username = req.body.username;
+  const username = req.body.username.trim();
   const password = req.body.password;
 
   const result = await db.query("SELECT * FROM etusers WHERE username = $1", [

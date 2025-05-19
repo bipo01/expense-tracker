@@ -104,6 +104,9 @@
     </form>
     <a href="/login">Já tenho uma conta</a>
     <script>
+      const username = document.querySelector("#username");
+      const password = document.querySelector("#password");
+      const passwordC = document.querySelector("#passwordC");
       document.querySelector("form").addEventListener("submit", (e) => {
         e.preventDefault();
         const allData = [...document.querySelectorAll("form input")];
@@ -111,6 +114,13 @@
         if (allData.some((el) => el.value.trim().length < 1)) {
           alert("Favor preencher todos os campos!");
           return;
+        } else if (
+          username.value.trim().includes(" ") ||
+          password.value.trim().includes(" ")
+        ) {
+          alert("Usuário e Senha não podem conter espaços");
+        } else if (password.value != passwordC.value) {
+          alert("Senhas estão diferentes!");
         } else {
           document.querySelector("form").submit();
         }
